@@ -1,0 +1,32 @@
+name: Build and Deploy
+
+# Triggers the workflow whenever you push commits to the main branch
+on:
+  push:
+    branches:
+    - main
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # Here we have a single job called 'firebase-deploy'
+  firebase-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    # Refer to repos in https://github.com/actions for more
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@master
+      with:
+        node-version: '18.x'
+    # Install node modules that need to build the app. Then build the app using prod env vars.
+    - run: npm install
+    - run: npm run build
+    # Deploy the app artifact to firebase
+    - uses: w9jds/firebase-action@master
+      with:
+        args: deploy --only hosting
+      env:
+        # Here we use the actions secret we set earlier
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
