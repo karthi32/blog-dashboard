@@ -1,0 +1,87 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h3 class="text-theme-primary">{{formStatus}} Post</h3>
+            <p class="md-5" *ngIf="formStatus == 'Add New'">You can add your new post here</p>
+            <p class="md-5" *ngIf="formStatus == 'Edit'">You can edit your post here</p>
+        </div>
+    </div>
+    <form *ngIf="postForm" [formGroup]="postForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-md-7">
+                <div class="card shadow-effect">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input id="title" [ngClass]="{'is-invalid': fc?.['title']?.touched && fc?.['title']?.invalid}" formControlName="title" type="text" class="form-control" (keyup)="onTitleChange($event)">
+                            <div *ngIf="fc?.['title'].errors?.['required']">
+                                <div class="alert alert-danger" *ngIf="fc?.['title']?.touched && fc?.['title']?.invalid">Title is required</div>
+                            </div>
+                            <div *ngIf=" fc?.['title'].errors?.['minlength']">
+                                <div class="alert alert-danger" *ngIf="fc?.['title']?.touched && fc?.['title']?.invalid">Title must be atleast 10 characters long</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="permalink">Permalink</label>
+                            <input id="permalink" [attr.disabled]="true ? 'disabled' : null" type="text" class="form-control" formControlName="permalink" name="permalink">
+                            <div *ngIf="fc?.['permalink'].errors?.['required']">
+                                <div class="alert alert-danger" *ngIf="fc?.['permalink']?.touched && fc?.['permalink']?.invalid">Permalink is required</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="excerpt">Exerpt</label>
+                            <textarea [ngClass]="{'is-invalid': fc?.['excerpt']?.touched && fc?.['excerpt']?.invalid}" formControlName="excerpt" id="excerpt" cols="30" rows="10" class="form-control"></textarea>
+                            <div *ngIf="fc?.['excerpt'].errors?.['required']">
+                                <div class="alert alert-danger" *ngIf="fc?.['excerpt']?.touched && fc?.['excerpt']?.invalid">Exerpt is required</div>
+                            </div>
+                            <div *ngIf=" fc?.['excerpt'].errors?.['minlength']">
+                                <div class="alert alert-danger" *ngIf="fc?.['excerpt']?.touched && fc?.['excerpt']?.invalid">Excerpt must be atleast 50 characters long</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="category">Please Select a Post category</label>
+                    <select class="form-control" formControlName="category" name="category">
+                        <option value="" disabled> Please select a category </option>
+                        <option *ngFor="let category of categories" value="{{category?.id}}-{{category.data.category}}">{{ category.data.category }}</option>    
+                    </select>
+                    <div *ngIf="fc?.['category'].errors?.['required']">
+                        <div class="alert alert-danger" *ngIf="fc?.['category']?.touched && fc?.['category']?.invalid">Category is required</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="">Post Image</label>
+                    <img [src]="imgSrc" class="form-control img-fluid img-preview" alt="">
+                    <input formControlName="postImg" [ngClass]="{'is-invalid': fc?.['postImg']?.touched && fc?.['postImg']?.invalid}" type="file" class="form-control" accept="image/*" (change)="showPreview($event)">
+                    <div *ngIf="fc?.['category'].errors?.['required']">
+                        <div class="alert alert-danger" *ngIf="fc?.['postImg']?.touched && fc?.['postImg']?.invalid">Post Image is required</div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+        <div class="row mt-3 mb-3">
+            <div class="col-md-12">
+                <div class="card shadow-effect">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="">Content</label>
+                            <angular-editor formControlName="content" placeholder="Add your content here"></angular-editor>
+                            <div *ngIf="fc?.['content'].errors?.['required']">
+                                <div class="alert alert-danger" *ngIf="fc?.['content']?.touched && fc?.['content']?.invalid">Content is required</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 text-center mb-5 mt-5">
+                <button class="btn btn-info btn-theme" [disabled]="postForm?.invalid" type="submit">Save Post</button>
+                <button class="btn btn-warning ml-2" routerLink="/posts">Back To Post</button>
+            </div>
+        </div>
+    </form>
+</div>
